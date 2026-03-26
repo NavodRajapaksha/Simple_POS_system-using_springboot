@@ -3,7 +3,10 @@ package edu.bootcamp.pos.controller;
 import edu.bootcamp.pos.dto.CustomerDto;
 import edu.bootcamp.pos.dto.request.CustomerUpdateDto;
 import edu.bootcamp.pos.service.CustomerService;
+import edu.bootcamp.pos.util.StandardResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,10 +37,19 @@ public class CustomerController {
         return customerDto;
     }
 
+//    @GetMapping(path = "/get-all-customers")
+//    public List<CustomerDto> getAllCustomers(){
+//        List<CustomerDto> allCustomers = customerService.getAllCustomers();
+//        return allCustomers;
+//    }
+
     @GetMapping(path = "/get-all-customers")
-    public List<CustomerDto> getAllCustomers(){
+    public ResponseEntity<StandardResponse> getAllCustomers(){
         List<CustomerDto> allCustomers = customerService.getAllCustomers();
-        return allCustomers;
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"Success",allCustomers)
+                , HttpStatus.OK
+        );
     }
 
     @DeleteMapping(path = "delete-customer/{id}")

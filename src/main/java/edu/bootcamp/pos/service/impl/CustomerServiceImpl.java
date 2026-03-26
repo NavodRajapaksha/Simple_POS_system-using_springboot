@@ -3,6 +3,7 @@ package edu.bootcamp.pos.service.impl;
 import edu.bootcamp.pos.dto.CustomerDto;
 import edu.bootcamp.pos.dto.request.CustomerUpdateDto;
 import edu.bootcamp.pos.entity.CustomerEntity;
+import edu.bootcamp.pos.exception.NotFoundException;
 import edu.bootcamp.pos.repository.CustomerRepository;
 import edu.bootcamp.pos.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -34,21 +35,21 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public String updateCustomer(CustomerUpdateDto customerUpdateDto) {
-        if(customerRepository.existsById(customerUpdateDto.getId())){
+        if (customerRepository.existsById(customerUpdateDto.getId())) {
             CustomerEntity customerEntity = customerRepository.getReferenceById(customerUpdateDto.getId());
             customerEntity.setName(customerUpdateDto.getName());
             customerEntity.setAddress(customerUpdateDto.getAddress());
 
             customerRepository.save(customerEntity);
             return customerUpdateDto.getName() + " Update Successful";
-        }else {
+        } else {
             throw new RuntimeException("User not found");
         }
     }
 
     @Override
     public CustomerDto getCustomerById(int customerId) {
-        if(customerRepository.existsById(customerId)){
+        if (customerRepository.existsById(customerId)) {
             CustomerEntity customerEntity = customerRepository.getReferenceById(customerId);
             CustomerDto customerDto = new CustomerDto(
                     customerEntity.getId(),
@@ -59,7 +60,7 @@ public class CustomerServiceImpl implements CustomerService {
                     customerEntity.isActive()
             );
             return customerDto;
-        }else {
+        } else {
             throw new RuntimeException("No Customer Founded");
         }
     }
@@ -67,22 +68,25 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerDto> getAllCustomers() {
         List<CustomerEntity> getAllCustomers = customerRepository.findAll();
+        if (getAllCustomers.size()>0) {
+            List<CustomerDto> customerDtoList = new ArrayList<>();
 
-        List<CustomerDto> customerDtoList = new ArrayList<>();
+            for (CustomerEntity customerEntity : getAllCustomers) {
+                CustomerDto customerDto = new CustomerDto(
+                        customerEntity.getId(),
+                        customerEntity.getName(),
+                        customerEntity.getAddress(),
+                        customerEntity.getContactNumber(),
+                        customerEntity.getNic(),
+                        customerEntity.isActive()
+                );
 
-        for (CustomerEntity customerEntity : getAllCustomers){
-            CustomerDto customerDto = new CustomerDto(
-                    customerEntity.getId(),
-                    customerEntity.getName(),
-                    customerEntity.getAddress(),
-                    customerEntity.getContactNumber(),
-                    customerEntity.getNic(),
-                    customerEntity.isActive()
-            );
-
-            customerDtoList.add(customerDto);
+                customerDtoList.add(customerDto);
+            }
+            return customerDtoList;
+        }else {
+            throw new NotFoundException("No user founded");
         }
-        return customerDtoList;
     }
 
     @Override
@@ -90,7 +94,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerRepository.existsById(customerId)) {
             customerRepository.deleteById(customerId);
             return "Delete Successful" + customerId;
-        }else {
+        } else {
             throw new RuntimeException("User not found");
         }
     }
@@ -101,7 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<CustomerDto> customerDtoList = new ArrayList<>();
 
-        for (CustomerEntity customerEntity : getAllCustomersByActiveStatus){
+        for (CustomerEntity customerEntity : getAllCustomersByActiveStatus) {
             CustomerDto customerDto = new CustomerDto(
                     customerEntity.getId(),
                     customerEntity.getName(),

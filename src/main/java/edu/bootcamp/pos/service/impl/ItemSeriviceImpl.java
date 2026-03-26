@@ -1,14 +1,18 @@
 package edu.bootcamp.pos.service.impl;
 
 import edu.bootcamp.pos.dto.ItemDto;
+import edu.bootcamp.pos.dto.pageinated.PageInatedResponseItemDto;
 import edu.bootcamp.pos.dto.respones.ItemGetResponseDto;
 import edu.bootcamp.pos.entity.ItemEntity;
+import edu.bootcamp.pos.exception.NotFoundException;
 import edu.bootcamp.pos.repository.ItemRepository;
 import edu.bootcamp.pos.service.ItemService;
 import edu.bootcamp.pos.util.Mapper.ItemMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,5 +66,31 @@ public class ItemSeriviceImpl implements ItemService {
         }else {
             throw new RuntimeException("Item is not active");
         }
+    }
+
+    @Override
+    public List<ItemGetResponseDto> getAllItemByStatus(boolean activeStatus) {
+        List<ItemEntity> itemEntityList = itemRepository.findAllByActiveEquals(activeStatus);
+
+        if (itemEntityList.size()>0){
+            List<ItemGetResponseDto> itemGetResponseDtos = itemMapper.entityListToDoList(itemEntityList);
+            return itemGetResponseDtos;
+        }else {
+            throw new NotFoundException("Item is not active");
+        }
+    }
+
+    @Override
+    public PageInatedResponseItemDto getAllItemByStatusWithPageInated(boolean activeStatus, int page, int size) {
+        Page<ItemEntity> itemEntities = itemRepository.findAllByActiveEqual(activeStatus, PageRequest.of(page,size));
+        if (itemEntities.getSize()<1){
+            throw new NotFoundException("No Data");
+        }
+
+        PageInatedResponseItemDto pageInatedResponseItemDto = new PageInatedResponseItemDto(
+                itemMapper.ListDtoToPage(itemEntities),
+                itemRepository.countAllByActiveEquals(activeStatus)
+        );
+        return pageInatedResponseItemDto;
     }
 }
