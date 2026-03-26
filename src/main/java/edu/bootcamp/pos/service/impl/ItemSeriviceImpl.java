@@ -5,6 +5,7 @@ import edu.bootcamp.pos.dto.respones.ItemGetResponseDto;
 import edu.bootcamp.pos.entity.ItemEntity;
 import edu.bootcamp.pos.repository.ItemRepository;
 import edu.bootcamp.pos.service.ItemService;
+import edu.bootcamp.pos.util.Mapper.ItemMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -19,6 +20,8 @@ public class ItemSeriviceImpl implements ItemService {
     private final ItemRepository itemRepository;
 
     private final ModelMapper modelMapper;
+
+    private final ItemMapper itemMapper;
 
     @Override
     public String saveItem(ItemDto itemDto) {
@@ -42,6 +45,19 @@ public class ItemSeriviceImpl implements ItemService {
             List<ItemGetResponseDto> itemGetResponseDtos = modelMapper.map(itemEntityList,
                     new TypeToken<List<ItemGetResponseDto>>(){}
                             .getType());
+            return itemGetResponseDtos;
+        }else {
+            throw new RuntimeException("Item is not active");
+        }
+    }
+
+    @Override
+    public List<ItemGetResponseDto> getItemByNameAndStatusByMapsstruct(String itemName) {
+        boolean active = true;
+        List<ItemEntity> itemEntityList = itemRepository.findAllByNameEqualsAndActive(itemName,active);
+
+        if (itemEntityList.size()>0){
+            List<ItemGetResponseDto> itemGetResponseDtos = itemMapper.entityListToDoList(itemEntityList);
             return itemGetResponseDtos;
         }else {
             throw new RuntimeException("Item is not active");

@@ -10,4 +10,6 @@ public interface ItemService {
     String saveItem(ItemDto itemDto);
 
     List<ItemGetResponseDto> getItemByNameAndStatus(String itemName);
+
+    List<ItemGetResponseDto> getItemByNameAndStatusByMapsstruct(String itemName);
 }
