@@ -82,7 +82,7 @@ public class ItemSeriviceImpl implements ItemService {
 
     @Override
     public PageInatedResponseItemDto getAllItemByStatusWithPageInated(boolean activeStatus, int page, int size) {
-        Page<ItemEntity> itemEntities = itemRepository.findAllByActiveEqual(activeStatus, PageRequest.of(page,size));
+        Page<ItemEntity> itemEntities = itemRepository.findAllByActive(activeStatus, PageRequest.of(page,size));
         if (itemEntities.getSize()<1){
             throw new NotFoundException("No Data");
         }
@@ -92,5 +92,14 @@ public class ItemSeriviceImpl implements ItemService {
                 itemRepository.countAllByActiveEquals(activeStatus)
         );
         return pageInatedResponseItemDto;
+    }
+
+    @Override
+    public PageInatedResponseItemDto getAllActiveItemPageInated(boolean activeStatus, int page, int size) {
+        Page<ItemEntity> itemEntities = itemRepository.findAllByActiveEquals(activeStatus, PageRequest.of(page,size));
+        return new PageInatedResponseItemDto(
+                itemMapper.ListDtoToPage(itemEntities),
+                itemRepository.count()
+        );
     }
 }

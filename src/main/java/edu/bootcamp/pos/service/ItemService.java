@@ -3,6 +3,7 @@ package edu.bootcamp.pos.service;
 import edu.bootcamp.pos.dto.ItemDto;
 import edu.bootcamp.pos.dto.pageinated.PageInatedResponseItemDto;
 import edu.bootcamp.pos.dto.respones.ItemGetResponseDto;
+import jakarta.validation.constraints.Max;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface ItemService {
     List<ItemGetResponseDto> getAllItemByStatus(boolean activeStatus);
 
     PageInatedResponseItemDto getAllItemByStatusWithPageInated(boolean activeStatus, int page, int size);
+
+    PageInatedResponseItemDto getAllActiveItemPageInated(boolean activeStatus, int page, @Max(50) int size);
 }

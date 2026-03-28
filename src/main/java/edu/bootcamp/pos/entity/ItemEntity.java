@@ -1,8 +1,11 @@
 package edu.bootcamp.pos.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.bootcamp.pos.entity.enums.MeasuringUnitType;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Set;
 
 @Entity
 @Getter
@@ -36,4 +39,8 @@ public class ItemEntity {
 
     @Column(name = "active_status", columnDefinition = "TINYINT default 0")
     private boolean active;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "itemEntity")
+    private Set<OrderDetailsEntity> orderDetailsEntities;
 }

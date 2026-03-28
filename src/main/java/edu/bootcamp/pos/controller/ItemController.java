@@ -55,7 +55,7 @@ public class ItemController {
         return itemGetResponseDtos;
     }
 
-    @GetMapping(path = "/get-all-items-by-status", params = "name")
+    @GetMapping(path = "/get-all-items-by-status", params = {"page","size"})
     public ResponseEntity<StandardResponse> getAllItemsByStatus(
             @RequestParam(value = "activeStatus") boolean activeStatus,
             @RequestParam(value = "page") int page,
@@ -64,6 +64,20 @@ public class ItemController {
 //      List<ItemGetResponseDto> itemGetResponseDtos = itemService.getAllItemByStatus(activeStatus,page,size);
 
         PageInatedResponseItemDto pageInatedResponseItemDto = itemService.getAllItemByStatusWithPageInated(activeStatus,page,size);
+
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"Success",pageInatedResponseItemDto)
+                , HttpStatus.CREATED
+        );
+    }
+
+    @GetMapping(path = "/get-all-active-items-paginated", params = {"page","size","activeStatus"})
+    public ResponseEntity<StandardResponse> getAllActiveItemPageInated(
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "size") @Max(50)int size,
+            @RequestParam(value = "activeStatus") boolean activeStatus
+    ){
+        PageInatedResponseItemDto pageInatedResponseItemDto = itemService.getAllActiveItemPageInated(activeStatus,page,size);
 
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(200,"Success",pageInatedResponseItemDto)

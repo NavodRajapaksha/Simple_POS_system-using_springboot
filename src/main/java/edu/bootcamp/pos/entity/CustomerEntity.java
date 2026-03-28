@@ -1,16 +1,19 @@
 package edu.bootcamp.pos.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "customer")
@@ -36,4 +39,8 @@ public class CustomerEntity {
 
     @Column(name = "active_status", columnDefinition = "TINYINT default 0")
     private boolean active;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "customerEntity")
+    private Set<OrderEntity> orderEntities;
 }

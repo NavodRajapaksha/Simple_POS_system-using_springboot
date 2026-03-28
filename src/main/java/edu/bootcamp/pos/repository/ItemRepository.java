@@ -18,7 +18,9 @@ public interface ItemRepository extends JpaRepository<ItemEntity,Integer> {
 
     List<ItemEntity> findAllByActiveEquals(boolean activeStatus);
 
-    Page<ItemEntity> findAllByActiveEqual(boolean activeStatus, Pageable pageable);
+    Page<ItemEntity> findAllByActiveEquals(boolean activeStatus, Pageable pageable);
+
+    Page<ItemEntity> findAllByActive(boolean activeStatus, Pageable pageable);
 
     int countAllByActiveEquals(boolean activeStatus);
 }

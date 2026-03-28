@@ -20,14 +20,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public String saveCustomer(CustomerDto customerDto) {
-        CustomerEntity customerEntity = new CustomerEntity(
-                customerDto.getId(),
-                customerDto.getName(),
-                customerDto.getAddress(),
-                customerDto.getContactNumber(),
-                customerDto.getNic(),
-                customerDto.isActive()
-        );
+        CustomerEntity customerEntity = CustomerEntity.builder()
+                .id(customerDto.getId())
+                .name(customerDto.getName())
+                .address(customerDto.getAddress())
+                .contactNumber(customerDto.getContactNumber())
+                .nic(customerDto.getNic())
+                .active(customerDto.isActive())
+                .build();
 
         customerRepository.save(customerEntity);
         return customerDto.getName();
