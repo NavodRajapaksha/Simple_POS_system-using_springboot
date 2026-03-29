@@ -1,6 +1,9 @@
 package edu.bootcamp.pos.service.impl;
 
+import edu.bootcamp.pos.dto.pageinated.PaginatedResponseOrderDetailsDto;
+import edu.bootcamp.pos.dto.query.OrderDetails;
 import edu.bootcamp.pos.dto.request.RequestOrderSaveDto;
+import edu.bootcamp.pos.dto.respones.ResponseOrderDetailsDto;
 import edu.bootcamp.pos.entity.OrderDetailsEntity;
 import edu.bootcamp.pos.entity.OrderEntity;
 import edu.bootcamp.pos.repository.CustomerRepository;
@@ -12,8 +15,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Character.getType;
@@ -60,6 +65,28 @@ public class OrderServiceImpl implements OrderService {
 
             return "saved";
         }
+        return null;
+    }
+
+    @Override
+    public PaginatedResponseOrderDetailsDto getAllOrderDetails(boolean status, int page, int size) {
+        List<OrderDetails> orderDetails = orderRepository.getAllOrderDetails(status, PageRequest.of(page,size));
+
+        List<ResponseOrderDetailsDto> orderDetailsDtos = new ArrayList<>();
+        for (OrderDetails o : orderDetails){
+            ResponseOrderDetailsDto r = new ResponseOrderDetailsDto(
+                  o.getCustomerName(),
+                  o.getCustomerAddress(),
+                  o.getContactNumber(),
+                  o.getDate(),
+                  o.getTotal()
+            );
+            orderDetailsDtos.add(r);
+        }
+        PaginatedResponseOrderDetailsDto paginatedResponseOrderDetailsDto = new PaginatedResponseOrderDetailsDto(
+                orderDetailsDtos,
+                orderRepository.countAllOrderDetails(status)
+        );
         return null;
     }
 }
