@@ -32,7 +32,7 @@ A RESTful backend API for a Point of Sale system built with Spring Boot, designe
 
 1. Clone the repository
 ```bash
-   git clone https://github.com/NavodRajapaksha/your-repo-name.git
+   git clone https://github.com/NavodRajapaksha/Simple_POS_system-using_springboot.git
 ```
 
 2. Create a MySQL database
